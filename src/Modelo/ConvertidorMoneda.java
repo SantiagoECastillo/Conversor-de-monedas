@@ -1,26 +1,18 @@
 package Modelo;
 
-import com.google.gson.Gson;
-
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
+import java.util.Scanner;
 
 public class ConvertidorMoneda {
-    public Moneda obtenerConversion(String MonedaBase, String cambio, double valorAConvertir){
-        URI direccion = URI.create("https://v6.exchangerate-api.com/v6/5f4dfb7160afa622319efbbf/pair/" +
-                MonedaBase + "/" + cambio + "/" + valorAConvertir);
-        HttpClient client = HttpClient.newHttpClient();
-        HttpRequest request = HttpRequest.newBuilder().uri(direccion).build();
+    public void convertirMoneda(String monedaBase, String monedaDeCambio){
+        Scanner lector = new Scanner(System.in);
+        System.out.println("Ingrese el valor que deseas convetir:");
+        double cantidadACambiar = Double.valueOf(lector.nextLine());
 
-        HttpResponse<String> response = null;
-        try {
-            response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            return new Gson().fromJson(response.body(), Moneda.class);
-        } catch (Exception e) {
-            throw new RuntimeException("No se encontro la moneda de cambio");
-        }
-
+        ConsultarMoneda consultar = new ConsultarMoneda();
+        Moneda moneda = consultar.obtenerConversion(monedaBase, monedaDeCambio, cantidadACambiar);
+        System.out.println("El valor de " + cantidadACambiar
+                + "[" + moneda.base_code() + "] corresponde a valor final de =>> "
+                + moneda.conversion_result() + " [" + moneda.target_code() + "] \n"
+        );
     }
 }
